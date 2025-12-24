@@ -1,11 +1,13 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
+import Blog from '#models/blog' 
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column()
+  @column({ columnName: 'full_name', serializeAs: 'fullName' })
   declare fullName: string | null
 
   @column()
@@ -13,6 +15,11 @@ export default class User extends BaseModel {
 
   @column({ serializeAs: null })
   declare password: string
+
+  @hasMany(() => Blog, {
+    foreignKey: 'authorId',
+  })
+  declare blogs: HasMany<typeof Blog>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -12,6 +12,7 @@
 const UsersController = () => import('#controllers/users_controller') // for lazy loading
 //import app from '@adonisjs/core/services/app'
 const AuthController = () => import('#controllers/auth_controller')
+const BlogsController=()=>import('#controllers/blogs_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 //import AuthController from '#controllers/auth_controller'
@@ -21,6 +22,8 @@ import { middleware } from './kernel.js'
 router.post('/register', [AuthController,'register'])
 router.post('/login', [AuthController,'login'])
 router.get('/me', [AuthController,'me']).use(middleware.jwt())
+router.get('/getAll',[BlogsController,'getAll']).use(middleware.jwt())
+router.post('/blog',[BlogsController,'create']).use(middleware.jwt())
 
 router.get('/', async () => {
   // console.log(app.getState())

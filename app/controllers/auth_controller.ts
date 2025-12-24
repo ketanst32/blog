@@ -4,7 +4,6 @@ import hash from '@adonisjs/core/services/hash'
 import jwt from 'jsonwebtoken'
 import env from '#start/env'
 
-
 export default class AuthController {
   // Register new user
   public async register({ request, response }: HttpContext) {
@@ -31,29 +30,24 @@ export default class AuthController {
   public async login({ request, response }: HttpContext) {
     const { email, password } = request.only(['email', 'password'])
     const user = await User.findBy('email', email)
-
     if (!user) {
       return response.unauthorized({ message: 'Invalid credentials' })
     }
-
     // Verify hashed password
     const passwordValid = await hash.verify(user.password, password)
     if (!passwordValid) {
       return response.unauthorized({ message: 'Invalid credentials' })
     }
-
     // Manually generate JWT
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      env.get('JWT_SECRET') || '',
-      { expiresIn: '15m' } 
-    )
-// supersecretkey
+    const token = jwt.sign({ userId: user.id, email: user.email }, env.get('JWT_SECRET') || '', {
+      expiresIn: '15m',
+    })
+    // supersecretkey
     return response.ok({
       message: 'Logged in successfully',
       token,
       tokenType: 'Bearer',
-      expiresIn: 900, 
+      expiresIn: 900,
     })
   }
 
@@ -68,6 +62,4 @@ export default class AuthController {
       },
     })
   }
-
- 
 }
