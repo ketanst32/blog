@@ -1,14 +1,25 @@
 import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import Blog from '#models/blog'
+import redis from '@adonisjs/redis/services/main'
 import { createPostValidator, updatePostValidator } from '#validators/blog_post'
 export default class BlogsController {
   // for getting all blogs  #get All
   public async getAll({ auth, response }: HttpContext) {
     await auth.authenticate()
     const user = auth.user as User
+    const cacheKey = `blogs:user:${user.id}`
     const pk = user.id
+    const cachedBlogs = await redis.get(cacheKey)
+    if (cachedBlogs) {
+      return response.ok({
+        status: 'success',
+        data: JSON.parse(cachedBlogs),
+        source: 'cache',
+      })
+    }
     const blogs = await Blog.query().where('author_id', pk)
+    await redis.setex(cacheKey, 300, JSON.stringify(blogs))
     return response.ok({
       status: 'success',
       data: blogs,
@@ -28,7 +39,7 @@ export default class BlogsController {
         content: payload.content,
         authorId: user.id,
       })
-
+      await redis.del(`blogs:user:${user.id}`)
       return response.created({
         status: 'success',
         data: blog,
