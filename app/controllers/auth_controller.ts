@@ -1,14 +1,26 @@
 import { HttpContext } from '@adonisjs/core/http'
+import { CreateUserDTO }  from '#app/DTOs/CreateUserDTO'
 import User from '#models/user'
 import hash from '@adonisjs/core/services/hash'
 import jwt from 'jsonwebtoken'
 import env from '#start/env'
+import UserService from '#services/auth_service'
+//import { CreateUserDTO } from 'app/DTOs/CreateUserDTO'
+
 
 export default class AuthController {
   // Register new user
+  // const userService = new UserService();
+  // const dto = new CreateUserDTO(data.full_name, data.email, data.password)
+
+  // userService.register({
+  // fullName: 'John Doe',
+  // email: 'john@example.com',
+  // password: 'secret123',
+  // });
   public async register({ request, response }: HttpContext) {
     const data = request.only(['full_name', 'email', 'password'])
-
+    
     // Hash the password before storing
     const user = await User.create({
       fullName: data.full_name,
@@ -52,7 +64,7 @@ export default class AuthController {
   }
 
   public async me({ auth, response }: HttpContext) {
-    await auth.authenticate()
+    //await auth.authenticate()
     const user = auth.user as User
     return response.ok({
       user: {
