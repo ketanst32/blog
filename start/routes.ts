@@ -9,17 +9,19 @@
 
 
 //import UsersController from '#controllers/users_controller' // for eager loading 
-const UsersController = () => import('#controllers/users_controller') // for lazy loading
+//const UsersController = () => import('#controllers/users_controller') // for lazy loading
 //import app from '@adonisjs/core/services/app'
 const AuthController = () => import('#controllers/auth_controller')
 const BlogsController=()=>import('#controllers/blogs_controller')
 import router from '@adonisjs/core/services/router'
+import Auth from "#controllers/auth"
 import { middleware } from './kernel.js'
 //import AuthController from '#controllers/auth_controller'
 
 //const authController = new AuthController()
 
 router.post('/register', [AuthController,'register'])
+router.post('/registerviaservice', [Auth,'register'])
 router.post('/login', [AuthController,'login'])
 router.get('/me', [AuthController,'me']).use(middleware.jwt())
 router.get('/getAll',[BlogsController,'getAll']).use(middleware.jwt())
@@ -45,5 +47,5 @@ router
   .where('id', {
     match: /^[0-9]+$/,
   })
-  router.get('users', [UsersController, 'index2']) 
+ // router.get('users', [UsersController, 'index2']) 
   

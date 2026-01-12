@@ -1,10 +1,10 @@
 import { HttpContext } from '@adonisjs/core/http'
-import { CreateUserDTO }  from '#app/DTOs/CreateUserDTO'
+import { CreateUserDTO } from "#DTOs/CreateUserDTO"
 import User from '#models/user'
 import hash from '@adonisjs/core/services/hash'
 import jwt from 'jsonwebtoken'
 import env from '#start/env'
-import UserService from '#services/auth_service'
+//import UserService from '#services/auth_service'
 //import { CreateUserDTO } from 'app/DTOs/CreateUserDTO'
 
 
